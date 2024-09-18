@@ -2,6 +2,8 @@ import UIKit
 
 final class ProfileViewController: UIViewController, UITableViewDelegate {
     
+    weak var delegate: ProfileVCDelegate?
+    
     var dataStorage: DataStorageManager
     var genderPicker: GenderPicker!
     var tableView: UITableView!
@@ -30,6 +32,7 @@ final class ProfileViewController: UIViewController, UITableViewDelegate {
         let validationErrors = Validator.validateFields(profileFields)
         if validationErrors.isEmpty {
             dataStorage.saveItemsToUserDefaults(profileFields)
+            delegate?.didUpdateProf(profileFields)
         } else {
             AlertError.showValidationErrorAlert(on: self, with: validationErrors)
             applySnapshot()
@@ -67,6 +70,7 @@ final class ProfileViewController: UIViewController, UITableViewDelegate {
         navigationItem.rightBarButtonItem?.title = tableView.isEditing ? "Готово" : "Редактировать"
         if !tableView.isEditing {
             validateAndSave()
+            navigationController?.popViewController(animated: true)
         }
     }
     

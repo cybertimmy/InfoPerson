@@ -1,9 +1,9 @@
 import UIKit
 
-class MainViewController: UIViewController {
+class MainViewController: UIViewController, ProfileVCDelegate {
     
-    private let mainView: MainView
     private let dataStorage = DataStorageManager()
+    private let mainView: MainView
     
     init() {
         self.mainView = MainView()
@@ -21,7 +21,12 @@ class MainViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        loadItems()
         setupApperiance()
+    }
+    
+    private func loadItems() {
+        mainView.profileFields = dataStorage.loadItemsFromUserDefaults()
     }
     
     private func setupApperiance() {
@@ -42,6 +47,12 @@ class MainViewController: UIViewController {
 extension MainViewController {
     @objc private func goToTableViewController() {
         let profileVC = ProfileViewController(dataStorage: dataStorage)
+        profileVC.delegate = self
         navigationController?.pushViewController(profileVC, animated: true)
+    }
+    
+    func didUpdateProf(_ update: [ProfileField]) {
+        mainView.profileFields = update
+        mainView.tableView.reloadData()
     }
 }
