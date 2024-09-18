@@ -3,6 +3,7 @@ import UIKit
 class MainViewController: UIViewController {
     
     private let mainView: MainView
+    private let dataStorage = DataStorageManager()
     
     init() {
         self.mainView = MainView()
@@ -20,10 +21,27 @@ class MainViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        setupApperiance()
+    }
+    
+    private func setupApperiance() {
+        navigationItem.title = "Информация"
+        setupNavigationBar()
+    }
+    
+    private func setupNavigationBar() {
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            title: "Посмотреть",
+            style: .plain,
+            target: self,
+            action: #selector(goToTableViewController)
+        )
     }
 }
 
 extension MainViewController {
-    
+    @objc private func goToTableViewController() {
+        let profileVC = ProfileViewController(dataStorage: dataStorage)
+        navigationController?.pushViewController(profileVC, animated: true)
+    }
 }
